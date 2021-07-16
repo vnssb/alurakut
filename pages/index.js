@@ -22,6 +22,29 @@ function ProfileSideBar(propriedades){
   )
 }
 
+{ /* Followers */ }
+function ProfileRelationsBox(propriedades){
+  return(
+    <ProfileRelationsBoxWrapper>
+      <h2 className="smallTitle">
+        {propriedades.title} ({propriedades.items.length})
+      </h2>
+      <ul>
+        {/* {followers.map((currentItem) => {
+          return (
+            <li key={currentItem}>
+              <a hrenf={`https://github.com/${currentItem}`}>
+                <img src={`https://github.com/${currentItem}.png`} />
+                <span>{currentItem.title}</span>
+              </a>
+            </li>
+          );
+        })} */}
+      </ul>
+    </ProfileRelationsBoxWrapper>
+  )
+}
+
 export default function Home() {
   const githubUser = 'vnssb';
   const [communities, setCommunities] = React.useState([
@@ -46,12 +69,22 @@ export default function Home() {
   // const communities = ['Alurakut'];
   const favPeople = [
     'hersonls', 
+    'sibelius',
+    'mojombo',
     'willianjusten', 
     'marcobrunodev',
-    'omariosouto',
-    'peas',
-    'felipefialho'
+    'omariosouto'
   ]
+  const [followers, setFollowers] = React.useState([]);
+  React.useEffect(function() {
+    fetch("https://api.github.com/users/mojombo/followers")
+    .then(function (serverAnswer) {
+      return serverAnswer.json();
+    })
+    .then(function(completeAnswer){
+      setFollowers(completeAnswer);
+    })
+  }, [])
 
   return (
     <>
@@ -102,13 +135,16 @@ export default function Home() {
           </Box>
         </div>
 
-        <div
-          className="profileRelationsArea"
-          style={{ gridArea: "profileRelationsArea" }}
-        >
+        <div className="profileRelationsArea"
+          style={{ gridArea: "profileRelationsArea" }}>
+          
+          { /* Followers */ }
+          <ProfileRelationsBox title="Followers" items={followers} />
+
+          {/* Tech Community People */}
           <ProfileRelationsBoxWrapper>
             <h2 className="smallTitle">
-              Pessoas da Comunidade Dev ({favPeople.length})
+              Tech Community People ({favPeople.length})
             </h2>
             <ul>
               {favPeople.map((currentItem) => {
@@ -123,10 +159,10 @@ export default function Home() {
               })}
             </ul>
           </ProfileRelationsBoxWrapper>
+          
+          {/* Communities */}
           <ProfileRelationsBoxWrapper>
-            <h2 className="smallTitle">
-              Comunidades ({communities.length})
-            </h2>
+            <h2 className="smallTitle">Communities ({communities.length})</h2>
             <ul>
               {communities.map((currentItem) => {
                 return (
@@ -144,4 +180,4 @@ export default function Home() {
       </MainGrid>
     </>
   );
-}
+};
